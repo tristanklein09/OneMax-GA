@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Main {
 
     private static Main instance;
@@ -14,6 +16,9 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        System.out.println("Hello, World!");
+        Genetic genetic = Genetic.getInstance(10, 100, 15);
+        String[][] array = genetic.generatePopulation();
+        int[] assignScore = genetic.assignScore(array);
+        System.out.println(Arrays.toString(assignScore));
     }
 }
