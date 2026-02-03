@@ -1,5 +1,3 @@
-//TODO: Create own pair data type
-
 public class Genetic{
 
     private static Genetic instance;
@@ -16,6 +14,7 @@ public class Genetic{
     }
 
     //Add recursion?
+    //TODO: Cannot generate perfect solution imediately
     public String[] generatePopulation(){
         String[] populationArray = new String[populationSize];
 
@@ -35,7 +34,6 @@ public class Genetic{
         for (int i = 0; i < populationSize; i++) {
             scoreArray[i] = score(populationArray[i]);
         }
-
         return  scoreArray;
     }
 
@@ -48,6 +46,16 @@ public class Genetic{
             }
         }
         return score;
+    }
+
+    public Pair splitBitString(String bitString) {
+        int stringLength = bitString.length();
+
+        String half1 = bitString.substring(0, stringLength / 2);
+        String half2 = bitString.substring(stringLength / 2, stringLength);
+
+        Pair splitBitString = new Pair(half1, half2);
+        return splitBitString;
     }
 
     //Generates offspring using the crossover strategy
