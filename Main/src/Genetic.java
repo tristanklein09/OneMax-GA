@@ -16,35 +16,38 @@ public class Genetic{
     }
 
     //Add recursion?
-    public String[][] generatePopulation(){
-        String[][] populationArray = new String[populationSize][bitStringLen];
+    public String[] generatePopulation(){
+        String[] populationArray = new String[populationSize];
 
         for (int i = 0; i < populationSize; i++) {
+            String bitString = "";
             for (int j = 0; j < bitStringLen; j++) {
-                String temp = String.valueOf((int) (Math.random() * 2)); //0-1
-                populationArray[i][j] = temp;
+                bitString += String.valueOf((int) (Math.random() * 2)); //0-1
             }
+            populationArray[i] = bitString;
         }
         return populationArray;
     }
 
-    //Add recursion?
-    public int[] assignScore(String[][] populationArray){
-        //Each index in scoreArray corresponds to each bitstring in populationArray
+    public int[] generateScoreArray(String[] populationArray) {
         int[] scoreArray = new int[populationSize];
-        int score = 0;
 
         for (int i = 0; i < populationSize; i++) {
-            for (int j = 0; j < bitStringLen; j++) {
-                if (populationArray[i][j].equals("1")) {
-                    score++;
-                }
-                //Adds score to array at position corresponding to the bitstring's position in
-                scoreArray[i] = score;
-            }
-            score = 0;
+            scoreArray[i] = score(populationArray[i]);
         }
-        return scoreArray;
+
+        return  scoreArray;
+    }
+
+    //Add recursion?
+    public int score(String bitString) {
+        int score = 0;
+        for (int i = 0; i < bitString.length(); i ++) {
+            if (bitString.charAt(i) == '1') {
+                score++;
+            }
+        }
+        return score;
     }
 
     //Generates offspring using the crossover strategy

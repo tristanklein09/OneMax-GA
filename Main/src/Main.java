@@ -17,8 +17,8 @@ public class Main {
 
     public static void main(String[] args) {
         Genetic genetic = Genetic.getInstance(10, 100, 15);
-        String[][] array = genetic.generatePopulation();
-        int[] assignScore = genetic.assignScore(array);
+        String[] array = genetic.generatePopulation();
+        int[] assignScore = genetic.generateScoreArray(array);
         System.out.println(Arrays.toString(assignScore));
     }
 }
