@@ -2,7 +2,7 @@ public class Genetic{
 
     private static Genetic instance;
     private final int bitStringLen;
-    private int populationSize;
+    private final int populationSize;
     private final double mutationRate;
 
     Genetic(int bitStringLen, int populationSize, double mutationRate) {
@@ -44,6 +44,8 @@ public class Genetic{
         return populationArray;
     }
 
+    //Add recursion?
+    //Redundant
     public int[] generateScoreArray(String[] populationArray) {
         int[] scoreArray = new int[populationSize];
 
@@ -82,6 +84,75 @@ public class Genetic{
     }
 
     //Generates offspring using the crossover strategy
+    public Pair crossover(Pair parents) {
+        String parent1 = parents.getKey();
+        String parent2 = parents.getValue();
+
+        //Child 1 = first half of parent 1 + second half of parent 2
+        //Child 2 = second half of parent 1 + first half of parent 1
+        String child1 = parent1.substring(0, bitStringLen / 2) + parent2.substring(bitStringLen / 2, bitStringLen);
+        String child2 = parent2.substring(0, bitStringLen / 2) + parent1.substring(bitStringLen / 2, bitStringLen);
+
+        return new Pair(child1, child2);
+    }
+
+    //Shorten code?
+    public Pair generateOffspring(Pair parents) {
+        Pair offspring = crossover(parents); //Use crossover method to generate offspring
+        String child1 =  offspring.getKey();
+        String child2 = offspring.getValue();
+        //Mutate the children
+        child1 = mutate(child1);
+        child2 = mutate(child2);
+
+        return new Pair(child1, child2);
+    }
+
+    public String[] runGeneration(int bitStringLen, int populationSize, String[] populationArray) {
+        //i += 2, pairs of parents follow this rule: (n, n + 1), (n + 2, n + 3)... This means that each parent can only have two children
+        for (int i = 0; i < populationSize; i+=2) {
+            //Define the parents and generate their children
+            Pair parents = new Pair(populationArray[i], populationArray[i+1]); //Parent 1 is key, parent 2 is value
+            Pair children = generateOffspring(parents); //Child 1 is key, Child 2 is value
+
+            //Generate the scores for the parents and children
+            int parent1Score =  score(parents.getKey());
+            int parent2Score =  score(parents.getValue());
+            int child1Score =  score(children.getKey());
+            int child2Score =  score(children.getValue());
+
+            boolean parent1HasLowestScore;
+
+            //Check which parent has the lowest or highest score
+            if (parent1Score > parent2Score) { //Parent 2 has lowest score
+                parent1HasLowestScore = false;
+            } else { //Parent 1 has lowest score, or they have the same score
+                parent1HasLowestScore = true;
+            }
+
+            //Replace the parent with the lowest score with the child with the highest score
+            //If none of the conditions below are met, both children have lower scores then the parents, so nothing is replaced
+            if (child1Score > child2Score) { //Child 1 has higher score
+                //If the conditions below are not met, child1 has a lower score than either of the parents
+                if (parent1HasLowestScore && child1Score > parent1Score) { //Replacing parent 1
+                    populationArray[i] = children.getKey();
+                }
+                else if (!parent1HasLowestScore && child1Score > parent2Score) { //Replacing parent 2
+                    populationArray[i + 1] = children.getKey();
+                }
+            } else { //Child 2 has a higher score, or they have the same score
+                if (parent1HasLowestScore && child2Score > parent1Score) {
+                    populationArray[i] = children.getValue();
+                }
+                else if (!parent1HasLowestScore && child2Score > parent2Score) {
+                    populationArray[i + 1] = children.getValue();
+                }
+            }
+        }
+
+        System.out.println("One generation pass has occurred");
+        return populationArray;
+    }
 
     public static Genetic getInstance(int bitStringLen, int populationSize, double mutationRate) {
         if (instance == null) {
