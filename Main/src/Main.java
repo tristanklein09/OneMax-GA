@@ -19,6 +19,5 @@ public class Main {
         Genetic genetic = Genetic.getInstance(10, 100, 15);
         String[] array = genetic.generatePopulation();
         int[] assignScore = genetic.generateScoreArray(array);
-        System.out.println(Arrays.toString(assignScore));
     }
 }
