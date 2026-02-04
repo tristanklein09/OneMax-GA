@@ -1,9 +1,13 @@
+import java.util.Arrays;
+
 public class Genetic{
 
     private static Genetic instance;
-    private final int bitStringLen;
-    private final int populationSize;
-    private final double mutationRate;
+    private static int bitStringLen;
+    private static int populationSize;
+    private static double mutationRate;
+    public static boolean hasReachedPerfectSolution = false;
+    public static int indexWithPerfectSolution;
 
     Genetic(int bitStringLen, int populationSize, double mutationRate) {
         instance = this;
@@ -14,7 +18,7 @@ public class Genetic{
     }
 
     //Add recursion?
-    public int score(String bitString) {
+    public static int score(String bitString) {
         int score = 0;
         for (int i = 0; i < bitString.length(); i ++) {
             if (bitString.charAt(i) == '1') {
@@ -25,7 +29,7 @@ public class Genetic{
     }
 
     //Add recursion?
-    public String[] generatePopulation(){
+    public static String[] generatePopulation(){
         String[] populationArray = new String[populationSize];
 
         for (int i = 0; i < populationSize; i++) {
@@ -64,13 +68,15 @@ public class Genetic{
         return new Pair(half1, half2);
     }
 
-    public String mutate(String bitString) {
+    public static String mutate(String bitString) {
         char[] bitCharArray = bitString.toCharArray();
+        double probability = mutationRate / 100.0;
+
         for (int i = 0; i < bitCharArray.length; i++) {
-            //Generate random number between 0 and mutationRate
-            int random = (int) (Math.random() * (mutationRate + 1));
+            //Generate random number between 0 and 1
+            double random = Math.random();
             //If the random number is equal to the mutation rate, flip the bit
-            if (random == mutationRate) {
+            if (random < probability) {
                 //System.out.println("Mutation has occurred at index " + i);
                 if (bitCharArray[i] == '1') { //The bit is 1
                     bitCharArray[i] = '0';
@@ -84,7 +90,7 @@ public class Genetic{
     }
 
     //Generates offspring using the crossover strategy
-    public Pair crossover(Pair parents) {
+    public static Pair crossover(Pair parents) {
         String parent1 = parents.getKey();
         String parent2 = parents.getValue();
 
@@ -97,7 +103,7 @@ public class Genetic{
     }
 
     //Shorten code?
-    public Pair generateOffspring(Pair parents) {
+    public static Pair generateOffspring(Pair parents) {
         Pair offspring = crossover(parents); //Use crossover method to generate offspring
         String child1 =  offspring.getKey();
         String child2 = offspring.getValue();
@@ -108,7 +114,7 @@ public class Genetic{
         return new Pair(child1, child2);
     }
 
-    public String[] runGeneration(int bitStringLen, int populationSize, String[] populationArray) {
+    public static String[] runGeneration(int bitStringLen, int populationSize, String[] populationArray) {
         //i += 2, pairs of parents follow this rule: (n, n + 1), (n + 2, n + 3)... This means that each parent can only have two children
         for (int i = 0; i < populationSize; i+=2) {
             //Define the parents and generate their children
@@ -136,22 +142,55 @@ public class Genetic{
                 //If the conditions below are not met, child1 has a lower score than either of the parents
                 if (parent1HasLowestScore && child1Score > parent1Score) { //Replacing parent 1
                     populationArray[i] = children.getKey();
+                    indexWithPerfectSolution = i; //This value is only used if there has been a perfect solution
                 }
                 else if (!parent1HasLowestScore && child1Score > parent2Score) { //Replacing parent 2
                     populationArray[i + 1] = children.getKey();
+                    indexWithPerfectSolution = i + 1;
                 }
             } else { //Child 2 has a higher score, or they have the same score
                 if (parent1HasLowestScore && child2Score > parent1Score) {
                     populationArray[i] = children.getValue();
+                    indexWithPerfectSolution = i;
                 }
                 else if (!parent1HasLowestScore && child2Score > parent2Score) {
                     populationArray[i + 1] = children.getValue();
+                    indexWithPerfectSolution = i + 1;
                 }
             }
+
+            //Perfect solution has been reached
+            if (child1Score == bitStringLen) {
+                hasReachedPerfectSolution = true;
+
+                return populationArray;
+            } else if (child2Score == bitStringLen) {
+                hasReachedPerfectSolution = true;
+                return populationArray;
+            }
+
         }
 
         System.out.println("One generation pass has occurred");
         return populationArray;
+    }
+
+    public static int runAllGenerations() {
+        int generationCount = 0;
+
+        String [] populationArray = generatePopulation();
+
+        while (!hasReachedPerfectSolution) {
+            generationCount++;
+            populationArray = runGeneration(bitStringLen, populationSize, populationArray);
+
+        }
+
+        System.out.println("Perfect solution reached after "+generationCount+" generations");
+        System.out.println("Perfect solution: "+populationArray[indexWithPerfectSolution]+ " at index: "+indexWithPerfectSolution);
+        System.out.println(Arrays.toString(populationArray));
+
+        return generationCount;
     }
 
     public static Genetic getInstance(int bitStringLen, int populationSize, double mutationRate) {

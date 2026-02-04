@@ -18,7 +18,6 @@ public class Main {
     public static void main(String[] args) {
         Genetic genetic = Genetic.getInstance(10, 100, 15);
         String[] array = genetic.generatePopulation();
-        genetic.runGeneration(10, 100, array);
-
+        genetic.runAllGenerations();
     }
 }
