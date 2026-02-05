@@ -167,15 +167,20 @@ public class Genetic{
     }
 
     public static int runAllGenerations() {
+        Timer timer = new Timer();
         int generationCount = 0;
+
 
         String [] populationArray = generatePopulation();
 
+        long startTimer = timer.startTimer();
         while (!hasReachedPerfectSolution) {
             generationCount++;
             populationArray = runGeneration(bitStringLen, populationSize, populationArray);
-
         }
+
+        double endTime  = timer.stopTimer(startTimer);
+        System.out.println("Time taken: " + endTime + " ms");
 
         System.out.println("Perfect solution reached after "+generationCount+" generations");
 

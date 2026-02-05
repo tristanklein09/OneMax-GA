@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Arrays;
 
 public class Main {
@@ -15,9 +16,15 @@ public class Main {
         return instance;
     }
 
-    public static void main(String[] args) {
-        Genetic genetic = new Genetic(10, 100, 15);
+    public static void main(String[] args) throws IOException {
+        Genetic genetic = new Genetic(11, 100, 15);
         String[] array = genetic.generatePopulation();
         genetic.runAllGenerations();
+
+        double[] x = {1,2,3};
+        double[] y = {1,2,3};
+
+        Graphing graphing = new Graphing(x, y);
+        graphing.chartTest(x, y);
     }
 }
