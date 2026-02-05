@@ -2,7 +2,6 @@ import java.util.Arrays;
 
 public class Genetic{
 
-    private static Genetic instance;
     private static int bitStringLen;
     private static int populationSize;
     private static double mutationRate;
@@ -10,11 +9,14 @@ public class Genetic{
     public static int indexWithPerfectSolution;
 
     Genetic(int bitStringLen, int populationSize, double mutationRate) {
-        instance = this;
         this.bitStringLen = bitStringLen;
         this.populationSize = populationSize;
         this.mutationRate = mutationRate;
 
+        //Throws an error if the bit string length is odd, as the crossover strategy relies on splitting the bit string into two equal halves
+        if (bitStringLen % 2 != 0) {
+            throw new IllegalArgumentException("Bit string length must be even");
+        }
     }
 
     //Add recursion?
@@ -46,17 +48,6 @@ public class Genetic{
             }
         }
         return populationArray;
-    }
-
-    //Add recursion?
-    //Redundant
-    public int[] generateScoreArray(String[] populationArray) {
-        int[] scoreArray = new int[populationSize];
-
-        for (int i = 0; i < populationSize; i++) {
-            scoreArray[i] = score(populationArray[i]);
-        }
-        return  scoreArray;
     }
 
     public Pair splitBitString(String bitString) {
@@ -187,16 +178,7 @@ public class Genetic{
         }
 
         System.out.println("Perfect solution reached after "+generationCount+" generations");
-        System.out.println("Perfect solution: "+populationArray[indexWithPerfectSolution]+ " at index: "+indexWithPerfectSolution);
-        System.out.println(Arrays.toString(populationArray));
 
         return generationCount;
-    }
-
-    public static Genetic getInstance(int bitStringLen, int populationSize, double mutationRate) {
-        if (instance == null) {
-            instance = new Genetic(bitStringLen, populationSize, mutationRate);
-        }
-        return instance;
     }
 }

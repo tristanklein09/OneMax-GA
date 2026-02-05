@@ -1,8 +1,8 @@
 //Implementing Pair data type so that javafx doesn't have to be installed
 public class Pair {
 
-    public final String key;
-    public final String value;
+    private final String key;
+    private final String value;
 
     public Pair(String key, String value) {
         this.key = key;
