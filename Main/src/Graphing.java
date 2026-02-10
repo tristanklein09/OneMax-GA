@@ -29,4 +29,18 @@ public class Graphing {
         //Saving as image file
         BitmapEncoder.saveBitmap(xyChart, "mychart", BitmapEncoder.BitmapFormat.PNG);
     }
+
+    public void createXYChart(double[] x, double[] y, String title, String xTitle, String yTitle, String seriesName, String fileName, int width, int height) throws IOException {
+        XYChart xyChart = new XYChartBuilder()
+                .width(width)
+                .height(height)
+                .title(title)
+                .xAxisTitle(xTitle)
+                .yAxisTitle(yTitle)
+                .build();
+
+        xyChart.addSeries(seriesName, x, y);
+
+        BitmapEncoder.saveBitmap(xyChart, fileName, BitmapEncoder.BitmapFormat.PNG);
+    }
 }

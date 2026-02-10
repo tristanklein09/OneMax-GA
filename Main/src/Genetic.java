@@ -162,13 +162,13 @@ public class Genetic{
 
         }
 
-        System.out.println("One generation pass has occurred");
+        //System.out.println("One generation pass has occurred");
         return populationArray;
     }
 
-    public static int runAllGenerations() {
+    public static double runAllGenerations() {
         Timer timer = new Timer();
-        int generationCount = 0;
+        int generationCount = 1;
 
 
         String [] populationArray = generatePopulation();
@@ -184,6 +184,8 @@ public class Genetic{
 
         System.out.println("Perfect solution reached after "+generationCount+" generations");
 
-        return generationCount;
+        hasReachedPerfectSolution = false; //Resetting for next trial
+
+        return endTime;
     }
 }
