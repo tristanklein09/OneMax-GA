@@ -13,13 +13,18 @@ public class Genetic{
         this.populationSize = populationSize;
         this.mutationRate = mutationRate;
 
-        //Throws an error if the bit string length is odd, as the crossover strategy relies on splitting the bit string into two equal halves
-        if (bitStringLen % 2 != 0) {
+
+        if (bitStringLen % 2 != 0) { //Throws an error if the bit string length is odd, as the crossover strategy relies on splitting the bit string into two equal halves
             throw new IllegalArgumentException("Bit string length must be even");
+        }
+        if (populationSize % 2 != 0) { //Throws an error if the population size is odd, as otherwise there would be one bit string that can't produce offspring
+            throw new IllegalArgumentException("Population size must be even");
+        }
+        if (mutationRate > 100) { //Throws an error if the mutation rate is more than 100, as having a more than 100% chance of a mutation happening is impossible
+            throw new IllegalArgumentException("Mutation rate must be less than 100");
         }
     }
 
-    //Add recursion?
     public static int score(String bitString) {
         int score = 0;
         for (int i = 0; i < bitString.length(); i ++) {
@@ -30,33 +35,26 @@ public class Genetic{
         return score;
     }
 
-    //Add recursion?
+    //Generates the initial population
     public static String[] generatePopulation(){
         String[] populationArray = new String[populationSize];
 
         for (int i = 0; i < populationSize; i++) {
+            //Generating the bitString
             String bitString = "";
             for (int j = 0; j < bitStringLen; j++) {
-                bitString += String.valueOf((int) (Math.random() * 2)); //0-1
+                bitString += String.valueOf((int) (Math.random() * 2)); //Will generate either 0 or 1
             }
+
             //Solution is perfect therefore do not add to array and regenerate
-            if (score(bitString) == bitStringLen) { //Calling score everytime may be inefficient?
-                i--;
-            }
-            else {
+            if (score(bitString) == bitStringLen) {
+                i--; //At the next cycle we remain at the same index
+            } else {
                 populationArray[i] = bitString;
             }
         }
+
         return populationArray;
-    }
-
-    public Pair splitBitString(String bitString) {
-        int stringLength = bitString.length();
-
-        String half1 = bitString.substring(0, stringLength / 2);
-        String half2 = bitString.substring(stringLength / 2, stringLength);
-
-        return new Pair(half1, half2);
     }
 
     public static String mutate(String bitString) {
