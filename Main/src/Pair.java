@@ -9,11 +9,15 @@ public class Pair {
         this.value = value;
     }
 
-    public String getKey() {
-        return key;
+    public String getKey() { //Get the first value of the pair
+        return this.key;
     }
 
-    public String getValue() {
-        return value;
+    public String getValue() { //Get the second value of the pair
+        return this.value;
     }
 }
+
+
+
+

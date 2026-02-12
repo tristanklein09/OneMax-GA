@@ -27,6 +27,7 @@ public class Genetic{
 
     public static int score(String bitString) {
         int score = 0;
+        //Increment score if the bit is a 1
         for (int i = 0; i < bitString.length(); i ++) {
             if (bitString.charAt(i) == '1') {
                 score++;
@@ -91,11 +92,11 @@ public class Genetic{
         return new Pair(child1, child2);
     }
 
-    //Shorten code?
     public static Pair generateOffspring(Pair parents) {
         Pair offspring = crossover(parents); //Use crossover method to generate offspring
         String child1 =  offspring.getKey();
         String child2 = offspring.getValue();
+
         //Mutate the children
         child1 = mutate(child1);
         child2 = mutate(child2);
@@ -151,13 +152,11 @@ public class Genetic{
             //Perfect solution has been reached
             if (child1Score == bitStringLen) {
                 hasReachedPerfectSolution = true;
-
                 return populationArray;
             } else if (child2Score == bitStringLen) {
                 hasReachedPerfectSolution = true;
                 return populationArray;
             }
-
         }
 
         //System.out.println("One generation pass has occurred");
@@ -166,12 +165,13 @@ public class Genetic{
 
     public static double runAllGenerations() {
         Timer timer = new Timer();
-        int generationCount = 1;
-
+        int generationCount = 1; //Keep count of how many generations have passed
 
         String [] populationArray = generatePopulation();
 
         long startTimer = timer.startTimer();
+
+        //Running all generations until a perfect solution is reached
         while (!hasReachedPerfectSolution) {
             generationCount++;
             populationArray = runGeneration(bitStringLen, populationSize, populationArray);
