@@ -2,20 +2,11 @@ import java.io.IOException;
 
 public class Main {
 
-    private static Main instance;
-
-    Main() {
-        instance = this;
-    }
-
-    public static Main getInstance() {
-        if (instance == null) {
-            instance = new Main();
-        }
-        return instance;
-    }
-
     public static void main(String[] args) throws IOException {
+
+
+        //Genetic genetic = new Genetic(10 ,100,15);
+        //genetic.runAllGenerations();
 
         int minBitStringLen = 4;
         int maxBitStringLen = 42;
@@ -49,6 +40,12 @@ public class Main {
 
         Graphing graphing = new Graphing(x, y);
         graphing.createXYChart(x, y, "Mean Time to Solution vs Bit String Length", "Bit String Length ", "Mean Time to Solution (ms)", "Mean Time to Solution", "TimeVsBitStringLength", 800, 800);
+
+
     }
+
+
+
+
 
 }

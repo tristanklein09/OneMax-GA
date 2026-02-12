@@ -23,6 +23,7 @@ public class Genetic{
         if (mutationRate > 100) { //Throws an error if the mutation rate is more than 100, as having a more than 100% chance of a mutation happening is impossible
             throw new IllegalArgumentException("Mutation rate must be less than 100");
         }
+
     }
 
     public static int score(String bitString) {
@@ -119,36 +120,6 @@ public class Genetic{
 
             boolean parent1HasLowestScore;
 
-            //Check which parent has the lowest or highest score
-            if (parent1Score > parent2Score) { //Parent 2 has lowest score
-                parent1HasLowestScore = false;
-            } else { //Parent 1 has lowest score, or they have the same score
-                parent1HasLowestScore = true;
-            }
-
-            //Replace the parent with the lowest score with the child with the highest score
-            //If none of the conditions below are met, both children have lower scores then the parents, so nothing is replaced
-            if (child1Score > child2Score) { //Child 1 has higher score
-                //If the conditions below are not met, child1 has a lower score than either of the parents
-                if (parent1HasLowestScore && child1Score > parent1Score) { //Replacing parent 1
-                    populationArray[i] = children.getKey();
-                    indexWithPerfectSolution = i; //This value is only used if there has been a perfect solution
-                }
-                else if (!parent1HasLowestScore && child1Score > parent2Score) { //Replacing parent 2
-                    populationArray[i + 1] = children.getKey();
-                    indexWithPerfectSolution = i + 1;
-                }
-            } else { //Child 2 has a higher score, or they have the same score
-                if (parent1HasLowestScore && child2Score > parent1Score) {
-                    populationArray[i] = children.getValue();
-                    indexWithPerfectSolution = i;
-                }
-                else if (!parent1HasLowestScore && child2Score > parent2Score) {
-                    populationArray[i + 1] = children.getValue();
-                    indexWithPerfectSolution = i + 1;
-                }
-            }
-
             //Perfect solution has been reached
             if (child1Score == bitStringLen) {
                 hasReachedPerfectSolution = true;
@@ -157,9 +128,36 @@ public class Genetic{
                 hasReachedPerfectSolution = true;
                 return populationArray;
             }
+
+            // Evaluate children independently
+            boolean child1BeatsP1 = child1Score > parent1Score;
+            boolean child1BeatsP2 = child1Score > parent2Score;
+
+            boolean child2BeatsP1 = child2Score > parent1Score;
+            boolean child2BeatsP2 = child2Score > parent2Score;
+
+            // Replace parent 1 with the stronger child that beats it
+            if (child1BeatsP1 || child2BeatsP1) {
+                if (child1Score >= child2Score) {
+                    populationArray[i] = children.getKey(); // Child 1
+                    indexWithPerfectSolution = i;
+                } else {
+                    populationArray[i] = children.getValue(); // Child 2
+                    indexWithPerfectSolution = i;
+                }
+            }
+            // Replace parent 2 with the stronger child that beats it
+            if (child1BeatsP2 || child2BeatsP2) {
+                if (child1Score >= child2Score) {
+                    populationArray[i + 1] = children.getKey(); // Child 1
+                    indexWithPerfectSolution = i + 1;
+                } else {
+                    populationArray[i + 1] = children.getValue(); // Child 2
+                    indexWithPerfectSolution = i + 1;
+                }
+            }
         }
 
-        //System.out.println("One generation pass has occurred");
         return populationArray;
     }
 
@@ -173,8 +171,8 @@ public class Genetic{
 
         //Running all generations until a perfect solution is reached
         while (!hasReachedPerfectSolution) {
-            generationCount++;
             populationArray = runGeneration(bitStringLen, populationSize, populationArray);
+            generationCount++;
         }
 
         double endTime  = timer.stopTimer(startTimer);
